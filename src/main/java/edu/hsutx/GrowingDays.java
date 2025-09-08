@@ -22,8 +22,27 @@ public class GrowingDays {
      * @param threshold The temperature threshold for calculating growing degree days.
      */
     GrowingDays(double[] degrees, double threshold) {
-        // TODO - Complete this method.  Fill degreeDays and cumulativeDegreeDays appropriately.
+    // make arrays for daily degree days and cumulative degree days
+    this.degreeDays = new double[degrees.length];
+    this.cumulativeDegreeDays = new double[degrees.length];
+
+    double running = 0.0; // keeps track of total so far
+
+    for (int i = 0; i < degrees.length; i++) {
+        // daily degree day = temp - threshold (can be negative)
+        this.degreeDays[i] = degrees[i] - threshold;
+
+        // add to running total
+        running += this.degreeDays[i];
+
+        // total cannot go below 0
+        if (running < 0) running = 0;
+
+        // save the running total into the array
+        this.cumulativeDegreeDays[i] = running;
     }
+}
+
 
     /**
      * Constructs a {@code GrowingDays} object by reading average daily temperatures from
@@ -87,9 +106,28 @@ public class GrowingDays {
      * @param threshold The cumulative degree days threshold to find.
      * @return The index of the first day where cumulative degree days exceed the threshold.
      */
+    
     public int getDayOverCDHelper(int left, int right, double threshold) {
-        // TODO - Complete this method
+    // start with -1 (means not found yet)
+    int ans = -1;
+
+    // binary search between left and right
+    while (left <= right) {
+        int mid = left + (right - left) / 2; // middle index
+
+        // if cumulative degree days at mid is >= threshold
+        if (cumulativeDegreeDays[mid] >= threshold) {
+            ans = mid;         // save this index as possible answer
+            right = mid - 1;   // keep looking on the left side (earlier day)
+        } else {
+            left = mid + 1;    // otherwise look on the right side (later day)
+        }
     }
+
+    // return index of first day that reaches the threshold, or -1 if not found
+    return ans;
+}
+
 
     /**
      * Finds the first day where the cumulative degree days exceed the specified threshold.
