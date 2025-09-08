@@ -42,7 +42,7 @@ public class CircularLL<E> {
      * @return {@code true} if the list is empty, otherwise {@code false}
      */
     public boolean isEmpty() {
-        // TODO - Complete this method
+        return size == 0;
     }
 
     /**
@@ -51,9 +51,27 @@ public class CircularLL<E> {
      *
      * @param e the element to add
      */
+
     public void addFirst(E e) {
-        // TODO - Complete this method
+    // if list is empty, make tail point to a new node
+    if (isEmpty()) {
+        tail = new Node<>(e, null);
+        tail.next = tail; // only node, so point to itself
+    } else {
+        // get current head (node after tail)
+        Node<E> head = tail.next;
+
+        // make a new node that points to the old head
+        Node<E> n = new Node<>(e, head);
+
+        // link tail to the new node, so it becomes the new head
+        tail.next = n;
     }
+
+    // increase list size
+    size++;
+}
+
 
     /**
      * Adds an element to the end of the list by reusing the {@code addFirst} method
@@ -61,9 +79,20 @@ public class CircularLL<E> {
      *
      * @param e the element to add
      */
+    
     public void addLast(E e) {
-        // TODO - Complete this method
+    // if list is empty, just use addFirst (makes a single node that points to itself)
+    if (isEmpty()) {
+        addFirst(e);
+    } else {
+        // first add new element at the front (head position)
+        addFirst(e);
+
+        // then move tail forward, so the new node becomes the tail (last element)
+        tail = tail.next;
     }
+}
+
 
     /**
      * Removes and returns the first element of the list. If the list becomes empty after
@@ -85,7 +114,9 @@ public class CircularLL<E> {
      * shifting the head of the list to the next element.
      */
     public void rotate() {
-        // TODO - Complete this method
+        if (tail != null) {
+            tail = tail.next; // tail+=1, head becomes next element
+        }
     }
 
     /**
@@ -94,7 +125,8 @@ public class CircularLL<E> {
      * @return the first element of the list, or {@code null} if the list is empty
      */
     public E first() {
-        // TODO - Complete this method
+        if (isEmpty()) return null;
+        return tail.getNext().getData();
     }
 
 }
